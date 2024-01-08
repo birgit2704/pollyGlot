@@ -6,7 +6,7 @@ import { useState } from "react";
 import OpenAI from "openai";
 
 const Main = () => {
-  const [input, setInput] = useState("Enter your text");
+  const [input, setInput] = useState("");
   const [selection, setSelection] = useState("");
   const [output, setOutput] = useState("");
   const [outputReady, setOutputReady] = useState(false);
