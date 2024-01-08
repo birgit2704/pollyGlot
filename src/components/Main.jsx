@@ -3,34 +3,61 @@ import Selection from "./Selection";
 import Output from "./Output";
 import Button from "./Button";
 import { useState } from "react";
+import OpenAI from "openai";
 
 const Main = () => {
-  // const [input, setInput] = useState("");
-  // const [selection, setSelection] = useState("");
-  // const [output, setOutput] = useState("");
+  const [input, setInput] = useState("Enter your text");
+  const [selection, setSelection] = useState("");
+  const [output, setOutput] = useState("");
   const [outputReady, setOutputReady] = useState(false);
-  // const [loading, setLoading] = useState(true);
 
-  /* logic: 
-  on Button click, input and selection are gathered and sent to AI, loading is activated
-  When response is ready, loading is deactivated and
-  the output is shown
+  const openai = new OpenAI({
+    apiKey: "",
+    dangerouslyAllowBrowser: true,
+  });
 
-  make another button to handle the logic of setting everything to 0.
-  or if statement into the onClick logic of the button
-
-  */
+  const handleRadioChange = (value) => {
+    setSelection(value);
+  };
+  const getTextAreaText = (value) => {
+    setInput(value);
+  };
 
   const handleClick = () => {
     setOutputReady(!outputReady);
-    console.log("clicked");
+    if (!outputReady) {
+      getTranslation(input, selection);
+    } else {
+      window.location.reload();
+    }
   };
 
+  async function getTranslation() {
+    const completion = await openai.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: `You are a helpful translator. Please translate into ${selection}`,
+        },
+        {
+          role: "user",
+          content: `${input}`,
+        },
+      ],
+      model: "gpt-3.5-turbo",
+    });
+
+    setOutput(completion.choices[0].message.content);
+  }
   return (
     <div className="main-container">
-      <Input />
+      <Input getTextAreaText={getTextAreaText} />
 
-      {outputReady ? <Output /> : <Selection />}
+      {outputReady ? (
+        <Output output={output} />
+      ) : (
+        <Selection handleRadioChange={handleRadioChange} input={input} />
+      )}
 
       <Button handleClick={handleClick} outputReady={outputReady} />
     </div>

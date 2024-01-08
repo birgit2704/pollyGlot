@@ -20,7 +20,7 @@ h3 {
 
 /* HEADER */
 header {
-  background-image: url("../public/assets/worldmap.png");
+  background-image: url("/assets/worldmap.png");
   background-position: 30%;
   height: 213px;
   display: flex;
