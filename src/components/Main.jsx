@@ -11,24 +11,26 @@ const Main = () => {
   const [output, setOutput] = useState("");
   const [outputReady, setOutputReady] = useState(false);
 
+  const apikey = import.meta.env.VITE_OPENAI_API_KEY; /* npm install dotenv */
+
   const openai = new OpenAI({
-    apiKey: "",
+    apiKey: apikey,
     dangerouslyAllowBrowser: true,
   });
 
-  const handleRadioChange = (value) => {
-    setSelection(value);
-  };
   const getTextAreaText = (value) => {
     setInput(value);
   };
 
+  const handleRadioChange = (value) => {
+    setSelection(value);
+  };
   const handleClick = () => {
     setOutputReady(!outputReady);
     if (!outputReady) {
       getTranslation(input, selection);
     } else {
-      window.location.reload();
+      setInput("");
     }
   };
 
@@ -51,7 +53,7 @@ const Main = () => {
   }
   return (
     <div className="main-container">
-      <Input getTextAreaText={getTextAreaText} />
+      <Input getTextAreaText={getTextAreaText} input={input} />
 
       {outputReady ? (
         <Output output={output} />
